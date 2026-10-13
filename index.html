@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Studio Gerak - HTML ke video</title><link rel="stylesheet" href="style.css"></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+<symbol id="i-paste" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7M8 20v-6h8v6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol></defs></svg>
+<header><h1>Studio Gerak</h1><p>Ubah kode animasi HTML menjadi video, langsung di browser.</p></header>
+<nav id="tabs"><button data-t="prompt" class="on">Prompt</button><button data-t="kode">Kode</button><button data-t="render">Render</button></nav>
+<main>
+<section data-p="prompt" class="card">
+<h2>Buat prompt untuk AI</h2>
+<label for="idea">Ide animasi</label>
+<textarea id="idea" rows="3" placeholder="Contoh: koin emas 3D berputar dengan kilau cahaya dan partikel"></textarea>
+<div class="chips"><button data-i="Tombol subscribe dengan efek klik dan notifikasi lonceng">Tombol subscribe</button><button data-i="Koin emas berputar 360 derajat dengan kilau cahaya">Koin emas</button><button data-i="Kartu cuaca dengan hujan dan petir bergerak">Kartu cuaca</button></div>
+<label>Latar belakang</label>
+<div class="seg" data-k="bg"><button data-v="green" class="on">Green screen</button><button data-v="alpha">Transparan</button><button data-v="theme">Sesuai tema</button></div>
+<label>Rasio</label>
+<div class="seg" data-k="ar"><button data-v="16:9">16:9</button><button data-v="9:16" class="on">9:16</button><button data-v="1:1">1:1</button><button data-v="4:5">4:5</button><button data-v="21:9">21:9</button></div>
+<label for="promptOut">Prompt siap salin</label>
+<textarea id="promptOut" rows="9" readonly></textarea>
+<button class="btn" id="copyP"><svg class="i"><use href="#i-copy"/></svg>Salin prompt</button>
+</section>
+<section data-p="kode" class="card" hidden>
+<h2>Tempel kode animasi</h2>
+<div class="bar"><button class="btn" id="paste"><svg class="i"><use href="#i-paste"/></svg>Tempel</button><button class="btn" id="clear"><svg class="i"><use href="#i-trash"/></svg>Hapus</button><button class="btn" id="save"><svg class="i"><use href="#i-save"/></svg>Simpan</button><button class="btn" id="sample">Muat contoh</button></div>
+<textarea id="code" class="mono" rows="12" spellcheck="false" placeholder="Tempel kode HTML dari AI di sini. Kode harus punya canvas dan fungsi renderFrameAtTime(t)."></textarea>
+<p class="meta"><span id="lines">0 baris</span> <span id="status"></span></p>
+<h3>Pratinjau</h3><div class="stage"><iframe id="pv" sandbox="allow-scripts allow-same-origin" title="Pratinjau"></iframe></div>
+</section>
+<section data-p="render" class="card" hidden>
+<h2>Pengaturan render</h2>
+<label>Resolusi</label>
+<div class="seg" data-k="res"><button data-v="720" class="on">HD 720p</button><button data-v="1080">Full HD</button><button data-v="1440">2K</button><button data-v="2160">4K</button></div>
+<label>Durasi: <b id="durL" class="mono">5</b> detik</label>
+<input type="range" id="dur" min="3" max="15" value="5">
+<label>Frame rate</label>
+<div class="seg" data-k="fps"><button data-v="24">24</button><button data-v="30" class="on">30</button><button data-v="60">60</button></div>
+<label>Mesin render</label>
+<div class="seg" data-k="eng"><button data-v="ultra" class="on">Ultra</button><button data-v="turbo">Turbo</button><button data-v="eco">Hemat</button><button data-v="compat">Kompatibel</button></div>
+<p class="hint" id="engHint"></p>
+<label>Format</label>
+<div class="seg" data-k="fmt"><button data-v="mp4" class="on">MP4</button><button data-v="webm">WebM</button></div>
+<div class="sum"><span class="mono" id="dims"></span><span id="est"></span></div>
+<p class="warn" id="warn" hidden></p>
+<button class="go" id="go"><svg class="i"><use href="#i-play"/></svg>Render video</button>
+</section>
+</main>
+<div id="modal" hidden><div class="dlg">
+<div class="mh"><h2 id="mt">Merender</h2><button id="close" class="x" aria-label="Tutup">&times;</button></div>
+<div id="bar"><div class="big mono" id="pct">0%</div><div id="strip"></div>
+<dl class="stats"><div><dt>Frame</dt><dd id="fr" class="mono"></dd></div><div><dt>Kecepatan</dt><dd id="sp" class="mono"></dd></div><div><dt>Berjalan</dt><dd id="el" class="mono"></dd></div><div><dt>Sisa</dt><dd id="eta" class="mono"></dd></div></dl>
+<button class="btn" id="cancel">Batalkan render</button></div>
+<div id="res" hidden><p id="msg"></p><video id="vid" controls playsinline></video><a id="dl" class="go">Unduh</a></div>
+</div></div>
+<script src="app.js"></script></body></html>
